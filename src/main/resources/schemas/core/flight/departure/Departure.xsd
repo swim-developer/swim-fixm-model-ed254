@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://www.fixm.aero/flight/4.3" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fx="http://www.fixm.aero/flight/4.3" xmlns:fb="http://www.fixm.aero/base/4.3" elementFormDefault="qualified" version="4.3.0">
+	<xs:annotation>
+		<xs:documentation>The Departure package contains all information about the actual departure of the flight at an airport.
+
+===========================================
+Copyright (c) 2023, Members of the FIXM CCB
+===========================================
+All rights reserved.
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+  * Redistributions of source code must retain the above copyright notice, this list of conditions and the disclaimer.
+  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the disclaimer in the documentation and/or other materials provided with the distribution.
+  * Neither the names of the FIXM CCB members nor the names of their contributors may be used to endorse or promote products derived from this specification without specific prior written permission.
+
+DISCLAIMER
+THIS SPECIFICATION IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+==========================================
+Editorial note: this license is an instance of the BSD license template as provided by the Open Source Initiative:
+http://www.opensource.org/licenses/bsd-license.php
+The authoritative reference for FIXM is www.FIXM.aero.
+Details on the FIXM CCB and a list of its members is available on request from FIXM_Secretariat@lists.eurocontrol.int</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://www.fixm.aero/base/4.3" schemaLocation="../../base/Base.xsd"/>
+	<xs:include schemaLocation="../flightroutetrajectory/RouteTrajectory.xsd"/>
+	<xs:simpleType name="AirfileIndicatorType">
+		<xs:annotation>
+			<xs:documentation>Identifies a flight that has filed its flight plan while in the air, beginning its route description from a specified point en-route, and therefore may not have provided a departure aerodrome.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="AIRFILE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DepartureTimeTypeType">
+		<xs:annotation>
+			<xs:documentation>The type of departure time represented. [FIXM]</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="fx:TrajectoryPointPropertyTypeType">
+			<xs:enumeration value="OFF_BLOCKS">
+				<xs:annotation>
+					<xs:documentation>This is the point at which the aircraft pushes back and begins to taxi for departure.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="START_TAKEOFF_ROLL">
+				<xs:annotation>
+					<xs:documentation>Indicates that the associated trajectory point corresponds to the point at the start of take-off roll (used for departures only).</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="WHEELS_OFF">
+				<xs:annotation>
+					<xs:documentation>Indicates that the associated trajectory point corresponds to the point at which the aircraft is predicted to be wheels off the runway on departure.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ActualTimeOfDepartureType">
+		<xs:annotation>
+			<xs:documentation>The time, type of time (wheels-off, off blocks, etc.), and geographical position of the departure.  [FIXM]</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="extension" type="fb:ActualTimeOfDepartureExtensionType" minOccurs="0" maxOccurs="2000" nillable="true"/>
+			<xs:element name="position" type="fb:GeographicalPositionType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>The geographical position associated with the actual time of departure.  [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="time" type="fb:DateTimeUtcType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>The actual time of departure from the aerodrome. [ICAO Doc 4444, Appendix 3, Field Type 13]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="type" type="fx:DepartureTimeTypeType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>The type of departure time represented. [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DepartureType">
+		<xs:annotation>
+			<xs:documentation>Groups information pertaining to the flight's departure.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="actualTimeOfDeparture" type="fx:ActualTimeOfDepartureType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>The time, type of time (wheels-off, off blocks, etc.), and geographical position of the departure.  [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="airfileIndicator" type="fx:AirfileIndicatorType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>Identifies a flight that has filed its flight plan while in the air, beginning its route description from a specified point en-route, and therefore may not have provided a departure aerodrome.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="airportSlotIdentification" type="fb:AirportSlotIdentificationType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>The identifier of the departure airport slot allocated to the flight. [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Helper class to create an embedded choice structure.</xs:documentation>
+				</xs:annotation>
+				<xs:element name="departureAerodrome" type="fb:AerodromeReferenceType" minOccurs="1" maxOccurs="1" nillable="true">
+					<xs:annotation>
+						<xs:documentation>The aerodrome from which the flight departs. [FIXM]</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="departurePoint" type="fx:DeparturePointChoiceType" minOccurs="1" maxOccurs="1" nillable="true">
+					<xs:annotation>
+						<xs:documentation>The first point of the route, for use when a departure aerodrome does not exist (such as when the flight plan is filed from the air) or is otherwise unknown.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Helper class to create an embedded choice structure.</xs:documentation>
+				</xs:annotation>
+				<xs:element name="departureAerodromePrevious" type="fb:AerodromeReferenceType" minOccurs="1" maxOccurs="1" nillable="true">
+					<xs:annotation>
+						<xs:documentation>Specifies the previous departure aerodrome value when a change is made.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="departurePointPrevious" type="fx:DeparturePointChoiceType" minOccurs="1" maxOccurs="1" nillable="true">
+					<xs:annotation>
+						<xs:documentation>Specifies the previous departure point value when a change is made.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Helper class to create an embedded choice structure.</xs:documentation>
+				</xs:annotation>
+				<xs:element name="estimatedOffBlockTime" type="fb:DateTimeUtcType" minOccurs="1" maxOccurs="1" nillable="true">
+					<xs:annotation>
+						<xs:documentation>The estimated time at which the aircraft will commence movement associated with departure. [ICAO Doc 4444]</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="estimatedRouteStartTime" type="fb:DateTimeUtcType" minOccurs="1" maxOccurs="1" nillable="true">
+					<xs:annotation>
+						<xs:documentation>The estimated time of departure from the first point on the route, for use when a departure aerodrome does not exist (such as when the flight plan is filed from the air) or is otherwise unknown. </xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Helper class to create an embedded choice structure.</xs:documentation>
+				</xs:annotation>
+				<xs:element name="estimatedOffBlockTimePrevious" type="fb:DateTimeUtcType" minOccurs="1" maxOccurs="1" nillable="true">
+					<xs:annotation>
+						<xs:documentation>Specifies the previous estimated off block time value when a change is made.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="estimatedRouteStartTimePrevious" type="fb:DateTimeUtcType" minOccurs="1" maxOccurs="1" nillable="true">
+					<xs:annotation>
+						<xs:documentation>Specifies the previous estimated route start time value when a change is made.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+			<xs:element name="extension" type="fb:DepartureExtensionType" minOccurs="0" maxOccurs="2000" nillable="true">
+				<xs:annotation>
+					<xs:documentation>An extension hook for attaching extension (non-core) classes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="runwayDirection" type="fb:RunwayDirectionDesignatorType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>The runway direction for taking off. [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="takeoffAlternateAerodrome" type="fb:AerodromeReferenceType" minOccurs="0" maxOccurs="2" nillable="true">
+				<xs:annotation>
+					<xs:documentation>An alternate aerodrome at which an aircraft can land should this become necessary shortly after take-off and it is not possible to use the aerodrome of departure. [ICAO Doc 4444]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DeparturePointChoiceType">
+		<xs:annotation>
+			<xs:documentation>Used for representing the point of departure when a departure aerodrome does not exist or is otherwise unknown.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="designatedPoint" type="fb:DesignatedPointType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A named geographical location used in defining an ATS route, the flight path of an aircraft or for other navigation or ATS purposes. [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="navaid" type="fb:NavaidType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A radio navigation aid used in defining an ATS route, the flight path of an aircraft or for other navigation or ATS purposes. [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="position" type="fb:GeographicalPositionType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>The values of latitude and longitude that define the position of a point on the surface of the Earth with respect to a reference datum. [specialised from ICAO Doc 9881]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="relativePoint" type="fb:RelativePointType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Bearing and distance from a reference point. [ICAO Doc 4444, Appendix 2, ITEM 15]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+</xs:schema>

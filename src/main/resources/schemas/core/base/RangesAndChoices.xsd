@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://www.fixm.aero/base/4.3" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fb="http://www.fixm.aero/base/4.3" elementFormDefault="qualified" version="4.3.0">
+	<xs:annotation>
+		<xs:documentation>This package contains combinations and choices comprised of various measure elements. [FIXM]
+
+===========================================
+Copyright (c) 2023, Members of the FIXM CCB
+===========================================
+All rights reserved.
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+  * Redistributions of source code must retain the above copyright notice, this list of conditions and the disclaimer.
+  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the disclaimer in the documentation and/or other materials provided with the distribution.
+  * Neither the names of the FIXM CCB members nor the names of their contributors may be used to endorse or promote products derived from this specification without specific prior written permission.
+
+DISCLAIMER
+THIS SPECIFICATION IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+==========================================
+Editorial note: this license is an instance of the BSD license template as provided by the Open Source Initiative:
+http://www.opensource.org/licenses/bsd-license.php
+The authoritative reference for FIXM is www.FIXM.aero.
+Details on the FIXM CCB and a list of its members is available on request from FIXM_Secretariat@lists.eurocontrol.int</xs:documentation>
+	</xs:annotation>
+	<xs:include schemaLocation="Extension.xsd"/>
+	<xs:include schemaLocation="Types.xsd"/>
+	<xs:include schemaLocation="Measures.xsd"/>
+	<xs:simpleType name="VisualFlightRulesLevelType">
+		<xs:annotation>
+			<xs:documentation>Indicates that no specific altitude has been provided for a flight operated under visual flight rules.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="VFR">
+				<xs:annotation>
+					<xs:documentation>No specific altitude has been provided for this VFR flight.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="FlightLevelOrAltitudeChoiceType">
+		<xs:annotation>
+			<xs:documentation>The Choice between flight level or altitude specification.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="altitude" type="fb:AltitudeType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Altitude specification.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="flightLevel" type="fb:FlightLevelType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Flight Level specification.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="FlightLevelOrAltitudeOrRangeChoiceType">
+		<xs:annotation>
+			<xs:documentation>Represent either a specific level or a level range with a lower and/or upper bound.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="altitude" type="fb:AltitudeType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Altitude specification.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="flightLevel" type="fb:FlightLevelType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Flight Level specification.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="range" type="fb:VerticalRangeType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A vertical range with a lower and/or upper bound.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="FlightLevelOrAltitudeOrVfrChoiceType">
+		<xs:annotation>
+			<xs:documentation>A choice between flight level or altitude or VFR specification.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="altitude" type="fb:AltitudeType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Altitude specification.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="flightLevel" type="fb:FlightLevelType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Flight Level specification.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="visualFlightRules" type="fb:VisualFlightRulesLevelType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Visual Flight Rules specification.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="TimeChoiceType">
+		<xs:annotation>
+			<xs:documentation>Represent either a specific time or a time range with a lower and/or upper bound.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="range" type="fb:TimeRangeType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Represents a time range with a lower and/or upper bound.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="value" type="fb:DateTimeUtcType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A specific time value.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="TimeRangeType">
+		<xs:annotation>
+			<xs:documentation>Represents a time range with a lower and/or upper bound.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="earliest" type="fb:DateTimeUtcType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>Lower bound of the time range.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="extension" type="fb:TimeRangeExtensionType" minOccurs="0" maxOccurs="2000" nillable="true">
+				<xs:annotation>
+					<xs:documentation>An extension hook for attaching extension (non-core) classes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="latest" type="fb:DateTimeUtcType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>Upper bound of the time range.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TrueAirspeedChoiceType">
+		<xs:annotation>
+			<xs:documentation>Represent either a specific true airspeed or a true airspeed range with a lower and/or upper bound.</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="range" type="fb:TrueAirspeedRangeType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Represents a true airspeed range with a lower and/or upper bound.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="value" type="fb:TrueAirspeedType" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>A specific true airspeed value.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="TrueAirspeedRangeType">
+		<xs:annotation>
+			<xs:documentation>Represents a true airspeed range with a lower and/or upper bound.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="extension" type="fb:TrueAirspeedRangeExtensionType" minOccurs="0" maxOccurs="2000" nillable="true">
+				<xs:annotation>
+					<xs:documentation>An extension hook for attaching extension (non-core) classes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="lowerSpeed" type="fb:TrueAirspeedType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>Lower bound of the true airspeed range.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="upperSpeed" type="fb:TrueAirspeedType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>Upper bound of the true airspeed range.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="VerticalRangeType">
+		<xs:annotation>
+			<xs:documentation>Represents a vertical range with a lower and/or upper bound.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="extension" type="fb:VerticalRangeExtensionType" minOccurs="0" maxOccurs="2000" nillable="true">
+				<xs:annotation>
+					<xs:documentation>An extension hook for attaching extension (non-core) classes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="lowerBound" type="fb:FlightLevelOrAltitudeChoiceType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>Lower bound of the vertical range.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="upperBound" type="fb:FlightLevelOrAltitudeChoiceType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>Upper bound of the vertical range.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

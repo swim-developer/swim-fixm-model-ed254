@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://www.fixm.aero/base/4.3" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fb="http://www.fixm.aero/base/4.3" elementFormDefault="qualified" version="4.3.0">
+	<xs:annotation>
+		<xs:documentation>This package contains representations for basic numeric, temporal, and textual types. [FIXM]
+
+===========================================
+Copyright (c) 2023, Members of the FIXM CCB
+===========================================
+All rights reserved.
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+  * Redistributions of source code must retain the above copyright notice, this list of conditions and the disclaimer.
+  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the disclaimer in the documentation and/or other materials provided with the distribution.
+  * Neither the names of the FIXM CCB members nor the names of their contributors may be used to endorse or promote products derived from this specification without specific prior written permission.
+
+DISCLAIMER
+THIS SPECIFICATION IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+==========================================
+Editorial note: this license is an instance of the BSD license template as provided by the Open Source Initiative:
+http://www.opensource.org/licenses/bsd-license.php
+The authoritative reference for FIXM is www.FIXM.aero.
+Details on the FIXM CCB and a list of its members is available on request from FIXM_Secretariat@lists.eurocontrol.int</xs:documentation>
+	</xs:annotation>
+	<xs:include schemaLocation="Extension.xsd"/>
+	<xs:simpleType name="AircraftIdentificationType">
+		<xs:annotation>
+			<xs:documentation>A group of letters, figures or a combination thereof which is either identical to, or the coded equivalent of, the aircraft call sign to be used in air-ground communications, and which is used to identify the aircraft in ground-ground air traffic services communications. [ICAO Doc 4444]</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="fb:CharacterStringType">
+			<xs:pattern value="[A-Z0-9]{2,7}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AircraftTypeDesignatorType">
+		<xs:annotation>
+			<xs:documentation>A group of alphanumeric characters used to identify, in an abbreviated form, a type of aircraft. [ICAO Doc 9426]
+
+Approved aircraft type designators are defined in ICAO Doc. 8643 - Aircraft Type Designators. [FIXM]</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="fb:CharacterStringType">
+			<xs:pattern value="[A-Z0-9]{2,4}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AirportSlotIdentificationType">
+		<xs:annotation>
+			<xs:documentation>The identifier of the scheduled time of arrival or departure available for allocation by, or as allocated by, a coordinator for an aircraft movement on a specific date at a coordinated airport. [adapted from IATA Worldwide Scheduling Guidelines, 21st Edition]</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="fb:CharacterStringType">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="10"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CharacterStringType">
+		<xs:annotation>
+			<xs:documentation>A sequence of characters [specialised from ISO19103, chapter 6.5.2.7]. 
+
+In FIXM, the maximum length of a CharacterString is set to 4096 characters. [FIXM]</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="4096"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CountType">
+		<xs:annotation>
+			<xs:documentation>Represents non-negative integer counts of objects.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CountPositiveType">
+		<xs:annotation>
+			<xs:documentation>Represents positive integer counts of objects.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="fb:CountType">
+			<xs:minInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DateTimeUtcType">
+		<xs:annotation>
+			<xs:documentation>Describes instances identified by the combination of a date and a time expressed in Coordinated Universal Time (UTC) and restricted to whole second precision.  [FIXM]</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="fb:DateTimeUtcHighPrecisionType">
+			<xs:pattern value="-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T((([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9])|24:00:00)Z"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DateTimeUtcHighPrecisionType">
+		<xs:annotation>
+			<xs:documentation>Describes instances identified by the combination of a date and a time expressed in Coordinated Universal Time (UTC).  [FIXM]</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:dateTime">
+			<xs:pattern value="-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\.[0-9]+)?|(24:00:00(\.0+)?))Z"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DateUtcType">
+		<xs:annotation>
+			<xs:documentation>Describes a date represented in Coordinated Universal Time (UTC). [FIXM]</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:date">
+			<xs:pattern value="([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])Z"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DecimalIndexType">
+		<xs:annotation>
+			<xs:documentation>Generic decimal fraction expressed to tenths, used as scaling or comparison factor. [FIXM]</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal">
+			<xs:fractionDigits value="1"/>
+			<xs:totalDigits value="4"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DurationType">
+		<xs:annotation>
+			<xs:documentation>Length or distance in the temporal dimension. [ISO 19108, chapter 5.2.3.7]
+
+Duration has no reference to start or stop times.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:duration">
+			<xs:pattern value="-?P([0-9]+Y)?([0-9]+M)?([0-9]+D)?(T([0-9]+H)?([0-9]+M)?([0-9]+S)?)?"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="HypertextReferenceType">
+		<xs:annotation>
+			<xs:documentation>This class provides an optional mechanism enabling FIXM aeronautical fields to be supplemented with references to AIXM features.  Uses of this field should be considered functionally equivalent to the xlink:href field used in AIXM to reference features.  [FIXM]</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:anyURI"/>
+	</xs:simpleType>
+	<xs:simpleType name="ModeACodeType">
+		<xs:annotation>
+			<xs:documentation>Mode A SSR code. [FIXM]</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="fb:CharacterStringType">
+			<xs:pattern value="[0-7]{4}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NamespaceDomainType">
+		<xs:annotation>
+			<xs:documentation>Identifies the particular type of namespace used by the originator of a GUFI.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FULLY_QUALIFIED_DOMAIN_NAME">
+				<xs:annotation>
+					<xs:documentation>An organisation can be identified by its registered Fully Qualified Domain Name (FQDN). The domain name used should uniquely identify the organisation, and it could be from either the organisation's email or from the organisation's website. For example, for the website https://www.example.com/ and email person@example.com, the domain name used for the namespace would be "example.com". The namespace can also include subdomains as needed to ensure proper uniqueness and allow for the best implementation. This could be done by adding a numeric or regional subdomain. For example, "east.example.com" or "region1.example.com".</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="LOCATION_INDICATOR">
+				<xs:annotation>
+					<xs:documentation>An ATM unit can be identified by its corresponding four-letter Location Indicator (LOCID as determined in ICAO Doc. 7910). A LOCID is available for each FIR or ACC, as well as for airport locations that operators are tied into. For example, the ATM unit "Washington ATC Center", LOCID KZDC, might use the namespace "KZDC".</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="OPERATING_AGENCY_DESIGNATOR">
+				<xs:annotation>
+					<xs:documentation>An operating agency can be identified by its three-letter Operating Agency Designator (ICAO Doc. 8585).</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NamespaceIdentifierType">
+		<xs:annotation>
+			<xs:documentation>The namespace chosen by the GUFI originator.  Used to reduce the likelihood of GUFI collisions and provide traceability as to which entity generated a particular GUFI.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="fb:CharacterStringType">
+			<xs:maxLength value="255"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RestrictedUniversallyUniqueIdentifierType">
+		<xs:annotation>
+			<xs:documentation>Helper type for restrictions on UniversallyUniqueIdentifier</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="fb:CharacterStringType">
+			<xs:pattern value="[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TextNameType">
+		<xs:annotation>
+			<xs:documentation>The official name of a State, an aerodrome, a unit, etc... [AIXM 5.1]</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="fb:CharacterStringType">
+			<xs:pattern value="([A-Z]|[0-9]|[, !&quot;&amp;#$%'\(\)\*\+\-\./:;&lt;=&gt;\?@\[\\\]\^_\|\{\}])*"/>
+			<xs:minLength value="0"/>
+			<xs:maxLength value="60"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="GloballyUniqueFlightIdentifierType">
+		<xs:annotation>
+			<xs:documentation>An immutable identifier associated with a flight that allows all eligible members of the ATM community to unambiguously refer to information pertaining to the flight.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="fb:UniversallyUniqueIdentifierType">
+				<xs:attribute name="creationTime" use="required" type="fb:DateTimeUtcType">
+					<xs:annotation>
+						<xs:documentation>The time at which the GUFI was created.  Used to reduce the likelihood of GUFI collisions and ensure GUFIs remain perpetually unique.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="namespaceDomain" use="required" type="fb:NamespaceDomainType">
+					<xs:annotation>
+						<xs:documentation>Identifies the particular type of namespace used by the originator of a GUFI.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="namespaceIdentifier" use="required" type="fb:NamespaceIdentifierType">
+					<xs:annotation>
+						<xs:documentation>The namespace chosen by the GUFI originator.  Used to reduce the likelihood of GUFI collisions and provide traceability as to which entity generated a particular GUFI.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RestrictionReferenceType">
+		<xs:annotation>
+			<xs:documentation>Reference to a published restriction should allow reference to a NOTAM; advisory; or AIXM identifier as necessary.  [FF-ICE]</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="extension" type="fb:RestrictionReferenceExtensionType" minOccurs="0" maxOccurs="2000" nillable="true">
+				<xs:annotation>
+					<xs:documentation>An extension hook for attaching extension (non-core) classes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="restrictionIdentifier" type="fb:CharacterStringType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>Identifier associated with the published restriction being referenced.  [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="restrictionType" type="fb:CharacterStringType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>Used to identify the type of published restriction being referenced. [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="href" use="optional" type="fb:HypertextReferenceType">
+			<xs:annotation>
+				<xs:documentation>Provides an optional mechanism enabling FIXM aeronautical fields to be supplemented with references to AIXM features.  This field should be considered functionally equivalent to the xlink:href field used in AIXM to reference features.  [FIXM]</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="UniversallyUniqueIdentifierType">
+		<xs:annotation>
+			<xs:documentation>A 128-bit number used, with a high probability, to uniquely identify information in computer systems. [FIXM]</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="fb:RestrictedUniversallyUniqueIdentifierType">
+				<xs:attribute name="codeSpace" use="required" fixed="urn:uuid" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Code Space of the UUID</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+</xs:schema>

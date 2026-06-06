@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jaxb:bindings xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
+               xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema"
+               jaxb:extensionBindingPrefixes="xjc"
+               version="3.0">
+
+    <jaxb:globalBindings>
+        <xjc:serializable uid="1"/>
+    </jaxb:globalBindings>
+
+    <jaxb:bindings schemaLocation="../schemas/ed254.xsd" node="/xs:schema">
+        <jaxb:schemaBindings>
+            <jaxb:package name="aero.fixm.ed254"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+
+    <jaxb:bindings schemaLocation="../schemas/core/base/Base.xsd" node="/xs:schema">
+        <jaxb:schemaBindings>
+            <jaxb:package name="aero.fixm.base"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+
+    <jaxb:bindings schemaLocation="../schemas/core/flight/Flight.xsd" node="/xs:schema">
+        <jaxb:schemaBindings>
+            <jaxb:package name="aero.fixm.flight"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+
+</jaxb:bindings>

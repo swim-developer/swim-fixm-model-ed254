@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://www.fixm.aero/flight/4.3" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fx="http://www.fixm.aero/flight/4.3" xmlns:fb="http://www.fixm.aero/base/4.3" elementFormDefault="qualified" version="4.3.0">
+	<xs:annotation>
+		<xs:documentation>The Arrival package contains information about the  arrival of the flight at an airport, including approach, landing, and arrival at terminal.
+
+===========================================
+Copyright (c) 2023, Members of the FIXM CCB
+===========================================
+All rights reserved.
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+  * Redistributions of source code must retain the above copyright notice, this list of conditions and the disclaimer.
+  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the disclaimer in the documentation and/or other materials provided with the distribution.
+  * Neither the names of the FIXM CCB members nor the names of their contributors may be used to endorse or promote products derived from this specification without specific prior written permission.
+
+DISCLAIMER
+THIS SPECIFICATION IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+==========================================
+Editorial note: this license is an instance of the BSD license template as provided by the Open Source Initiative:
+http://www.opensource.org/licenses/bsd-license.php
+The authoritative reference for FIXM is www.FIXM.aero.
+Details on the FIXM CCB and a list of its members is available on request from FIXM_Secretariat@lists.eurocontrol.int</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://www.fixm.aero/base/4.3" schemaLocation="../../base/Base.xsd"/>
+	<xs:include schemaLocation="../flightroutetrajectory/RouteTrajectory.xsd"/>
+	<xs:simpleType name="ArrivalTimeTypeType">
+		<xs:annotation>
+			<xs:documentation>The type of arrival time represented. [FIXM]</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="fx:TrajectoryPointPropertyTypeType">
+			<xs:enumeration value="END_LANDING_ROLL">
+				<xs:annotation>
+					<xs:documentation>Indicates that the associated trajectory point corresponds to the point at which the aircraft is predicted to come to a full stop on the arrival runway. (A prediction only, the flight will likely exit the runway without coming to a full stop).</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="IN_BLOCKS">
+				<xs:annotation>
+					<xs:documentation>Indicates the point and time at which an arriving aircraft is/was in blocks.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="WHEELS_ON">
+				<xs:annotation>
+					<xs:documentation>Indicates that the associated trajectory point corresponds to the point at which the aircraft is predicted to be wheels on the runway for arrival.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ActualTimeOfArrivalType">
+		<xs:annotation>
+			<xs:documentation>The time, type of time (wheels-on, in blocks, etc.), and geographical position of the arrival.  [FIXM]</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="extension" type="fb:ActualTimeOfArrivalExtensionType" minOccurs="0" maxOccurs="2000" nillable="true">
+				<xs:annotation>
+					<xs:documentation>An extension hook for attaching extension (non-core) classes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="position" type="fb:GeographicalPositionType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>The geographical position associated with the actual time of arrival.  [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="time" type="fb:DateTimeUtcType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>The actual time of arrival. [ICAO Doc 4444, Appendix 3, Field Type 17]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="type" type="fx:ArrivalTimeTypeType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>The type of arrival time represented. [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ArrivalType">
+		<xs:annotation>
+			<xs:documentation>Information about the destination and actual arrival of the flight. [FIXM]</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="actualTimeOfArrival" type="fx:ActualTimeOfArrivalType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>The time, type of time (wheels-on, in blocks, etc.), and geographical position of the arrival.  [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="airportSlotIdentification" type="fb:AirportSlotIdentificationType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>The identifier of the arrival airport slot allocated to the flight. [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="arrivalAerodrome" type="fb:AerodromeReferenceType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>The aerodrome at which the flight has actually arrived. [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="destinationAerodrome" type="fb:AerodromeReferenceType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>The aerodrome of intended landing. [ICAO Doc 4444 - extracted from the definition of Destination Alternate]
+This is the aerodrome at which the flight is scheduled to arrive. [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="destinationAerodromeAlternate" type="fb:AerodromeReferenceType" minOccurs="0" maxOccurs="2" nillable="true">
+				<xs:annotation>
+					<xs:documentation>An alternate aerodrome to which an aircraft may proceed should it become either impossible or inadvisable to land at the aerodrome of intended landing. [ICAO Doc 4444]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="destinationAerodromePrevious" type="fb:AerodromeReferenceType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>Specifies the previous destination aerodrome value when a change is made.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="extension" type="fb:ArrivalExtensionType" minOccurs="0" maxOccurs="2000" nillable="true">
+				<xs:annotation>
+					<xs:documentation>An extension hook for attaching extension (non-core) classes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="reclearanceInFlight" type="fx:ReclearanceInFlightType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>The route details to the revised destination aerodrome, followed by the ICAO four-letter location indicator of
+the aerodrome. The revised route is subject to reclearance in flight. [ICAO Doc 4444]"</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="runwayDirection" type="fb:RunwayDirectionDesignatorType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>The runway direction for landing. [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ReclearanceInFlightType">
+		<xs:annotation>
+			<xs:documentation>The route details to the revised destination aerodrome, followed by the ICAO four-letter location indicator of
+the aerodrome. The revised route is subject to reclearance in flight. [ICAO Doc 4444]</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="extension" type="fb:ReclearanceInFlightExtensionType" minOccurs="0" maxOccurs="2000" nillable="true">
+				<xs:annotation>
+					<xs:documentation>An extension hook for attaching extension (non-core) classes.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="filedRevisedDestinationAerodrome" type="fb:AerodromeReferenceType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>Aerodrome where the flight will divert to based on the revised route. For example, an aerodrome where the flight will divert to if more fuel is used than expected.[FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="routeToRevisedDestination" type="fb:CharacterStringType" minOccurs="0" maxOccurs="1" nillable="true">
+				<xs:annotation>
+					<xs:documentation>Route to the revised destination aerodrome. [FIXM]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

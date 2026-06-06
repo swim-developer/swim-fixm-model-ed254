@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://coopans.org/swim/ed254/arrivalSequence/1.0"
+    targetNamespace="http://coopans.org/swim/ed254/arrivalSequence/1.0"
+    elementFormDefault="qualified"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fb="http://www.fixm.aero/base/4.3"
+    xmlns:fx="http://www.fixm.aero/flight/4.3">
+    <xs:annotation>
+        <xs:documentation>ED-254 Arrival Sequence Service Schema - Version 1.0
+
+XML Schema Definition for the Extended AMAN (E-AMAN) Arrival Sequence Service
+as specified by EUROCAE ED-254 Performance Standard.
+
+This schema defines the data model for arrival sequence messages exchanged
+between Air Navigation Service Providers (ANSPs) within the SWIM Solution.
+It extends FIXM 4.3 base and flight types for aviation-specific data elements.
+
+Message Types:
+  - arrivalSequence: Real-time arrival sequence updates for a destination aerodrome
+  - providerExceptions: Service status notifications (unavailable, degraded, sequencing disabled)
+
+References:
+  - EUROCAE ED-254: Arrival Sequence Service Performance Standard (June 2018)
+  - FIXM 4.3: Flight Information Exchange Model
+  - EUROCONTROL SPEC-170: SWIM-TI Yellow Profile
+  - EU Regulation 2021/116: Common Project 1 (CP1)</xs:documentation>
+    </xs:annotation>
+
+    <xs:import namespace="http://www.fixm.aero/base/4.3"
+        schemaLocation="./core/base/Base.xsd" />
+    <xs:import namespace="http://www.fixm.aero/flight/4.3"
+        schemaLocation="./core/flight/Flight.xsd" />
+
+    <xs:simpleType name="CodeArrivalPointUsage">
+        <xs:union>
+            <xs:simpleType>
+                <xs:restriction base="xs:token">
+                    <xs:enumeration value="INITIAL_METERING_FIX" />
+                    <xs:enumeration value="COORDINATION" />
+                    <xs:enumeration value="METERING_FIX" />
+                    <xs:enumeration value="INITIAL_APPROACH_FIX" />
+                    <xs:enumeration value="FINAL_APPROACH_FIX" />
+                    <xs:enumeration value="STACK_EXIT" />
+                    <xs:enumeration value="OTHER" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="AmanExceptionType">
+        <xs:union>
+            <xs:simpleType>
+                <xs:restriction base="xs:token">
+                    <xs:enumeration value="SEQUENCING_DISABLED" />
+                    <xs:enumeration value="AMAN_UNAVAILABLE" />
+                    <xs:enumeration value="AMAN_DEGRADED" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:simpleType name="ModeSCallSignType">
+        <xs:restriction base="fb:CharacterStringType">
+            <xs:pattern value="[A-Z0-9\s]{8}" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="CodeAmanStatusType">
+        <xs:union>
+            <xs:simpleType>
+                <xs:restriction base="xs:token">
+                    <xs:enumeration value="SEQUENCED_UNSTABLE" />
+                    <xs:enumeration value="SEQUENCED_STABLE" />
+                    <xs:enumeration value="MANUAL_INTERVENTION" />
+                    <xs:enumeration value="SEQUENCED_FROZEN" />
+                    <xs:enumeration value="TIME_FROZEN" />
+                    <xs:enumeration value="IS_ON_FINAL" />
+                    <xs:enumeration value="HAS_LANDED" />
+                    <xs:enumeration value="DESEQUENCED" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:complexType name="FlightAmanStrategy">
+        <xs:sequence>
+            <xs:element name="amanStrategyIdentifier"
+                type="fb:CharacterStringType" minOccurs="0"
+                nillable="true" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="IfpsIdentifierType">
+        <xs:restriction base="fb:CharacterStringType">
+            <xs:pattern value="[A-Z]{2}[0-9]{8}" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="CodePlanningStatus">
+        <xs:union>
+            <xs:simpleType>
+                <xs:restriction base="xs:token">
+                    <xs:enumeration value="ESTIMATED_TIME" />
+                    <xs:enumeration value="TARGET_TIME" />
+                    <xs:enumeration value="CONTROLLED_TIME" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
+
+    <xs:element name="providerExceptions">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="provException" type="AmanExceptionType" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="arrivalSequence">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="creationTime" type="fb:DateTimeUtcType" />
+                <xs:element name="publicationTime" type="fb:DateTimeUtcHighPrecisionType" />
+                <xs:element name="firstMessageAfterServiceOutage" type="xs:boolean" />
+                <xs:element name="aerodromeDesignator" type="fb:LocationIndicatorType" />
+                <xs:element name="applicableStrategyPerSequence" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="amanStrategyIdentifier" type="fb:CharacterStringType"
+                                nillable="true" />
+                            <xs:element name="endTime" type="fb:DateTimeUtcType" nillable="true" />
+                            <xs:element name="startTime" type="fb:DateTimeUtcType" nillable="true" />
+                            <xs:element name="flightAmanStrategies">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="flightAmanStrategy"
+                                            type="FlightAmanStrategy" minOccurs="0"
+                                            maxOccurs="unbounded" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="sequenceEntries">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element minOccurs="0" maxOccurs="unbounded"
+                                name="arrivalManagementInformation">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="amanTargetLandingTime"
+                                            type="fb:DateTimeUtcType" />
+                                        <xs:element name="arrivalManagementHandlingIndicator"
+                                            type="CodeAmanStatusType" minOccurs="0" nillable="true" />
+                                        <xs:element name="lastFiledRecord" type="xs:boolean"
+                                            default="false" />
+                                        <xs:element name="sequenceNumber"
+                                            type="fb:CharacterStringType" minOccurs="0"
+                                            nillable="true" />
+                                        <xs:element name="typeOfAircraft"
+                                            type="fb:AircraftTypeDesignatorType" minOccurs="0" />
+                                        <xs:element name="wakeTurbulenceIcaoCategory"
+                                            type="fx:WakeTurbulenceCategoryType" minOccurs="0" />
+                                        <xs:element name="priorityHandled" type="xs:boolean"
+                                            minOccurs="0" default="false" />
+                                        <xs:element name="assignedArrivalRunway"
+                                            type="fb:RunwayDirectionDesignatorType" minOccurs="0"
+                                            nillable="true" />
+                                        <xs:element name="meteringInformation" minOccurs="0" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="amanTargetTimeOver"
+                                                        type="fb:DateTimeUtcType" />
+                                                    <xs:element name="delayAtPoint"
+                                                        type="fb:DurationType" minOccurs="0"
+                                                        nillable="true" />
+                                                    <xs:element name="planningStatus"
+                                                        type="CodePlanningStatus" minOccurs="0" />
+                                                    <xs:element name="pointName"
+                                                        type="fb:DesignatedPointDesignatorType" />
+                                                    <xs:element name="pointUsage"
+                                                        type="CodeArrivalPointUsage" />
+                                                    <xs:element minOccurs="0"
+                                                        name="advisoryInformation">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="constraintCTA"
+                                                                    type="fb:DateTimeUtcType"
+                                                                    minOccurs="0"
+                                                                    nillable="true" />
+                                                                <xs:element name="routeAdvisory"
+                                                                    type="fb:CharacterStringType"
+                                                                    minOccurs="0"
+                                                                    nillable="true" />
+                                                                <xs:element name="speedAdvisory"
+                                                                    type="fb:CharacterStringType"
+                                                                    minOccurs="0"
+                                                                    nillable="true" />
+                                                                <xs:element name="timeToGainOrLose"
+                                                                    type="xs:integer" minOccurs="0"
+                                                                    nillable="true" />
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="flightIdentification">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="arcid"
+                                                        type="fb:AircraftIdentificationType" />
+                                                    <xs:element name="ades"
+                                                        type="fb:LocationIndicatorType" />
+                                                    <xs:element name="adep"
+                                                        type="fb:LocationIndicatorType" />
+                                                    <xs:element name="eobt"
+                                                        type="fb:DateTimeUtcType"
+                                                        minOccurs="0" />
+                                                    <xs:element name="eobd"
+                                                        type="fb:DateTimeUtcType"
+                                                        minOccurs="0" />
+                                                    <xs:element name="gufi"
+                                                        type="fb:GloballyUniqueFlightIdentifierType"
+                                                        minOccurs="0" />
+                                                    <xs:element name="ifplId"
+                                                        type="IfpsIdentifierType" minOccurs="0" />
+                                                    <xs:element name="amanUniqueTechnicalId"
+                                                        type="fb:CharacterStringType" minOccurs="0" />
+                                                    <xs:element name="modeSCallSign"
+                                                        type="ModeSCallSignType" minOccurs="0" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="customWakeTurbulenceCategory"
+                                            minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="categoryName"
+                                                        type="fb:CharacterStringType" />
+                                                    <xs:element name="categoryValue"
+                                                        type="fb:CharacterStringType" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="flightIsPriorityHandled" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="priority"
+                                                        type="fb:CharacterStringType" />
+                                                    <xs:element name="priorityHandlingReason"
+                                                        type="fb:CharacterStringType" minOccurs="0" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="applicableStrategyPerFlight"
+                                            type="FlightAmanStrategy" minOccurs="0"
+                                            maxOccurs="unbounded" />
+                                        <xs:element name="totalDelay" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="arrivalDelay"
+                                                        type="xs:integer" minOccurs="0"
+                                                        nillable="true" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="proposedProcedure" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="advisedHoldingProcedure"
+                                                        type="fb:CharacterStringType" minOccurs="0"
+                                                        nillable="true" />
+                                                    <xs:element name="advisedSTAR"
+                                                        type="fb:CharacterStringType" minOccurs="0"
+                                                        nillable="true" />
+                                                    <xs:element name="advisedTransition"
+                                                        type="fb:CharacterStringType" minOccurs="0"
+                                                        nillable="true" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="landingPosition" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="landingSequencePosition"
+                                                        type="xs:integer" minOccurs="0"
+                                                        nillable="true" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element name="departureAirport" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element
+                                                        name="departureAerodrome"
+                                                        type="fb:LocationIndicatorType"
+                                                        nillable="true" />
+                                                    <xs:element
+                                                        name="timeToLoseOnTheGround"
+                                                        type="xs:integer" minOccurs="0"
+                                                        nillable="true" />
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
